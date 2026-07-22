@@ -73,6 +73,15 @@ Paste a sample of your recommender's output here as a text block so a reader can
 ```
 # e.g.:
 # User profile: genre=indie, mood=chill, energy=low
+taste_profile = {
+    "favorite_genre": "lofi",
+    "favorite_mood": "chill",
+    "target_energy": 0.40,
+    "target_tempo": 80,
+    "target_valence": 0.60,
+    "target_danceability": 0.60,
+    "target_acousticness": 0.75
+}
 # Recommendations:
 #   1. ...
 #   2. ...
