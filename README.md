@@ -69,7 +69,39 @@ You can add more tests in `tests/test_recommender.py`.
 ## Sample Recommendation Output
 
 Paste a sample of your recommender's output here as a text block so a reader can see what it produces:
+Loading songs from data/songs.csv...
 
+=== Top 5 Music Recommendations ===
+
+1. Weekend Escape by Coastal Waves
+   Genre: pop | Mood: happy
+   Score: 69.85
+   Reasons: Genre match (+30), Mood match (+20), Energy similarity (+14.8), Low acousticness (+5)
+--------------------------------------------------
+
+2. Sunrise City by Neon Echo
+   Genre: pop | Mood: happy
+   Score: 69.70
+   Reasons: Genre match (+30), Mood match (+20), Energy similarity (+14.7), Low acousticness (+5)
+--------------------------------------------------
+
+3. Gym Hero by Max Pulse
+   Genre: pop | Mood: intense
+   Score: 64.05
+   Reasons: Genre match (+30), Energy similarity (+13.1), Low acousticness (+5)
+--------------------------------------------------
+
+4. Rooftop Lights by Indigo Parade
+   Genre: indie pop | Mood: happy
+   Score: 39.40
+   Reasons: Mood match (+20), Energy similarity (+14.4), Low acousticness (+5)
+--------------------------------------------------
+
+5. City Pulse by Voltage Avenue
+   Genre: electronic | Mood: energetic
+   Score: 17.65
+   Reasons: Energy similarity (+13.3), Low acousticness (+5)
+--------------------------------------------------
 ```
 # e.g.:
 # User profile: genre=indie, mood=chill, energy=low
@@ -82,13 +114,38 @@ taste_profile = {
     "target_danceability": 0.60,
     "target_acousticness": 0.75
 }
-# Recommendations:
-#   1. ...
-#   2. ...
-#   3. ...
-```
+
 
 **Screenshot or video** *(optional)*: <!-- Insert a screenshot or demo video link here -->
+Loading songs from data/songs.csv...
+
+=== Top 5 Music Recommendations ===
+
+1. Weekend Escape by Coastal Waves
+   Genre: pop | Mood: happy
+   Score: 69.85
+   Reasons: Genre match (+30), Mood match (+20), Energy similarity (+14.8), Low acousticness (+5)
+--------------------------------------------------
+2. Sunrise City by Neon Echo
+   Genre: pop | Mood: happy
+   Score: 69.70
+   Reasons: Genre match (+30), Mood match (+20), Energy similarity (+14.7), Low acousticness (+5)
+--------------------------------------------------
+3. Gym Hero by Max Pulse
+   Genre: pop | Mood: intense
+   Score: 48.05
+   Reasons: Genre match (+30), Energy similarity (+13.1), Low acousticness (+5)
+--------------------------------------------------
+4. Rooftop Lights by Indigo Parade
+   Genre: indie pop | Mood: happy
+   Score: 39.40
+   Reasons: Mood match (+20), Energy similarity (+14.4), Low acousticness (+5)
+--------------------------------------------------
+5. Night Drive Loop by Neon Echo
+   Genre: synthwave | Mood: moody
+   Score: 19.25
+   Reasons: Energy similarity (+14.2), Low acousticness (+5)
+--------------------------------------------------
 
 ---
 
@@ -96,9 +153,9 @@ taste_profile = {
 
 Use this section to document the experiments you ran. For example:
 
-- What happened when you changed the weight on genre from 2.0 to 0.5
-- What happened when you added tempo or valence to the score
-- How did your system behave for different types of users
+- When I lowered the weight of the genre, it made the genre a less important factor in the recommendation score. The program stopped prioritizxing whether a song belongs to the user's favorite genre and relied more on other aspects like mood, energy etc.
+- When I added tempo to the score it helped to distinguish between slow and faster songs. This allowed the recommender to become more detailed and accurate, as it considered more aspects about the song's sound. A user that might prefer relaxing music with a slower tempo would be recommended songs of similar tempos.
+- The program produced different recommendations depending on each user's preferences. Someone who likes high-energy pop pieces would be recommended more pop songs, happy mood songs, and energetic beats. On the contrary, someone who likes more relaxed, study-type pieces, would likely be recommended lofi or ambient music.
 
 ---
 
@@ -106,14 +163,7 @@ Use this section to document the experiments you ran. For example:
 
 Summarize some limitations of your recommender.
 
-Examples:
-
-- It only works on a tiny catalog
-- It does not understand lyrics or language
-- It might over favor one genre or mood
-
-You will go deeper on this in your model card.
-
+There are several limitations to this program, the first being that it is working with a small catalog of songs, therefore, it may not be as accurate as a real platform with millions of songs. The system only considers a few features and does not consider the lyrics, artist popularity, or cultural contesxt which can all influence whether a user enjoys a song or not. Another major limitation is the weighting assigned to each feature. If a genre has a very high weight, then the program may reccomenf only songs from the user's favorite genre and fail to introduce the user to new genres.
 ---
 
 ## Reflection
@@ -122,10 +172,7 @@ Read and complete `model_card.md`:
 
 [**Model Card**](model_card.md)
 
-Write 1 to 2 paragraphs here about what you learned:
-
-- about how recommenders turn data into predictions
-- about where bias or unfairness could show up in systems like this
+Through this project, I learned how a platform analyzes data to formulate predictions about what a user might enjoy. More relative to my program, a recomender can analyse genre, mood, energy etc., score them based on similarity, and thus create personalized results. I also investigated how reccomendation systems can contain bias depending on how the scoring is implemented. This would lead to certain artists, genres etc. being favored over others, and limiting users' exposure to new experiences.
 
 
 
