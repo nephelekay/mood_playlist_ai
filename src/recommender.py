@@ -9,13 +9,14 @@ class Song:
     Represents a song and its attributes.
     Required by tests/test_recommender.py
     """
-    id: int
+    track_id: str
     title: str
-    artist: str
+    artists: str
+    album: str
     genre: str
     mood: str
     energy: float
-    tempo_bpm: float
+    tempo: float
     valence: float
     danceability: float
     acousticness: float
@@ -27,10 +28,16 @@ class UserProfile:
     Represents a user's taste preferences.
     Required by tests/test_recommender.py
     """
-    favorite_genre: str
-    favorite_mood: str
+    favorite_genres: list[str]
+    favorite_artists: list[str]
+    favorite_moods: list[str]
+
     target_energy: float
-    likes_acoustic: bool
+    target_tempo: float
+    target_valence: float
+    target_danceability: float
+    target_acousticness: float
+    
 
 
 class Recommender:
@@ -119,39 +126,41 @@ class Recommender:
 
         return ", ".join(reasons)
 
-
-def load_songs(csv_path: str) -> List[Dict]:
     """
     Reads songs from a CSV file and returns them as a list of dictionaries.
-
-    Numeric values are converted to integers or floats so they can be
-    used in scoring calculations.
-
-    Args:
-        csv_path: Path to the songs CSV file.
-
-    Returns:
-        A list of song dictionaries.
+    Numeric values are converted to floats so they can be used in scoring 
+    calculations.
+    @param csv_path CSV to parse.
+    @return list of song dictionaries.
     """
-    print(f"Loading songs from {csv_path}...")
+    def load_songs(csv_path: str) -> List[Dict]:
 
-    songs = []
+        print(f"Loading songs from {csv_path}...")
 
-    with open(csv_path, "r", newline="", encoding="utf-8") as csvfile:
-        reader = csv.DictReader(csvfile)
+        songs = []
 
-        # Read each row and convert numeric values.
-        for row in reader:
-            row["id"] = int(row["id"])
-            row["energy"] = float(row["energy"])
-            row["tempo_bpm"] = float(row["tempo_bpm"])
-            row["valence"] = float(row["valence"])
-            row["danceability"] = float(row["danceability"])
-            row["acousticness"] = float(row["acousticness"])
+        with open(csv_path, "r", newline="", encoding="utf-8") as csvfile:
+            reader = csv.DictReader(csvfile)
 
-            songs.append(row)
+            # Read each row and store only the fields used by the recommender.
+            for row in reader:
+                # Each dictionary represents one song
+                song = {
+                    "track_id": row["track_id"],
+                    "title": row["track_name"],
+                    "artist": row["artists"],
+                    "album": row["album_name"],
+                    "genre": row["track_genre"],
+                    "energy": float(row["energy"]),
+                    "tempo_bpm": float(row["tempo"]),
+                    "valence": float(row["valence"]),
+                    "danceability": float(row["danceability"]),
+                    "acousticness": float(row["acousticness"]),
+                }
 
-    return songs
+                songs.append(song)
+
+            return songs
 
 
 def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
