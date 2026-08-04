@@ -1,38 +1,42 @@
-"""
-Command line runner for the Music Recommender Simulation.
-
-This file helps you quickly run and test your recommender.
-
-You will implement the functions in recommender.py:
-- load_songs
-- score_song
-- recommend_songs
-"""
-
-from src.recommender import load_songs, recommend_songs
+from src.track_elements import Song, UserProfile
+from src.score import score_song
 
 
-def main() -> None:
-    songs = load_songs("data/songs.csv")
+def main():
 
-    # Starter example profile
-    user_prefs = {
-        "favorite_genre": "pop",
-        "favorite_mood": "happy",
-        "target_energy": 0.8,
-        "likes_acoustic": False
-    }
+    test_song = Song(
+        track_id="123",
+        title="Test Song",
+        artists="Test Artist",
+        album="Test Album",
+        genre="pop",
+        mood="Feel-Good",
+        energy=0.85,
+        tempo=120,
+        valence=0.80,
+        danceability=0.90,
+        acousticness=0.10
+    )
 
-    recommendations = recommend_songs(user_prefs, songs, k=5)
+    test_user = UserProfile(
+        favorite_genres=["pop"],
+        favorite_artists=["Test Artist"],
+        favorite_moods=["Feel-Good"],
 
-    print("\n=== Top 5 Music Recommendations ===\n")
+        target_energy=0.80,
+        target_tempo=120,
+        target_valence=0.75,
+        target_danceability=0.85,
+        target_acousticness=0.15
+    )
 
-    for i, (song, score, explanation) in enumerate(recommendations, start=1):
-        print(f"{i}. {song['title']} by {song['artist']}")
-        print(f"   Genre: {song['genre']} | Mood: {song['mood']}")
-        print(f"   Score: {score:.2f}")
-        print(f"   Reasons: {explanation}")
-        print("-" * 50)
+    score, reasons = score_song(test_song, test_user)
+
+    print("Score:", score)
+    print("Reasons:")
+
+    for reason in reasons:
+        print("-", reason)
 
 
 if __name__ == "__main__":
