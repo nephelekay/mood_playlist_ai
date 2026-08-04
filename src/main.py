@@ -1,5 +1,5 @@
-from src.track_elements import Song, UserProfile
-from src.score import score_song
+from track_features import Song, UserProfile
+from scoring import score_song
 
 
 def main():

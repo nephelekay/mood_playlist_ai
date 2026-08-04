@@ -1,4 +1,4 @@
-from src.track_elements import Song, UserProfile
+from track_features import Song, UserProfile
 
 ##Scoring per category.
 ENERGY_WEIGHT = 0.22
