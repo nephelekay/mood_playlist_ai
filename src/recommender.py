@@ -39,12 +39,81 @@ class UserProfile:
     target_acousticness: float
     
 
+def generate_mood(energy: float, valence: float, acousticness: float) -> str:
+    # Strong acoustic sound
+    if acousticness > 0.75 and energy < 0.60:
+        return "Acoustic"
+
+    # High-energy celebrations
+    if energy > 0.85 and valence > 0.70:
+        return "Party"
+
+    # High-energy but darker tone
+    if energy > 0.80 and valence < 0.30:
+        return "Dark"
+
+    # High-energy general
+    if energy > 0.75:
+        return "Energetic"
+
+    # Positive and upbeat
+    if valence > 0.70:
+        return "Feel-Good"
+
+    # Relaxed and positive
+    if energy < 0.40 and valence > 0.50:
+        return "Laid-Back"
+
+    # More emotional or introspective
+    if energy < 0.55 and valence < 0.35 and acousticness > 0.40:
+        return "Melancholic"
+
+    # Relaxed regardless of emotion
+    if energy < 0.45:
+        return "Chill"
+
+
+    return "Neutral"   
+
+
+"""
+Reads songs from a CSV file and returns them as Song objects.
+Numeric values are converted to floats and moods are generated
+from audio features.
+@param csv_path CSV file to parse.
+@return list of Song objects.
+"""
+def load_songs(csv_path: str) -> List[Song]:
+
+    print(f"Loading songs from {csv_path}...")
+
+    songs = []
+
+    with open(csv_path, "r", newline="", encoding="utf-8") as csvfile:
+        reader = csv.DictReader(csvfile)
+
+        # Read each row and store only the fields used by the recommender.
+        for row in reader:
+            mood = generate_mood(float(row["energy"]), float(row["valence"]), float(row["acousticness"]))
+            songs.append(
+                Song(
+                    track_id = row["track_id"],
+                    title = row["track_name"],
+                    artists = row["artists"],
+                    album = row["album_name"],
+                    genre = row["track_genre"],
+                    mood=mood,
+                    energy = float(row["energy"]),
+                    tempo = float(row["tempo"]),
+                    valence = float(row["valence"]),
+                    danceability = float(row["danceability"]),
+                    acousticness = float(row["acousticness"]),
+                )
+            )
+            
+        return songs
 
 class Recommender:
-    """
-    OOP implementation of the recommendation logic.
-    Required by tests/test_recommender.py
-    """
 
     def __init__(self, songs: List[Song]):
         """
@@ -54,6 +123,9 @@ class Recommender:
             songs: A list of Song objects.
         """
         self.songs = songs
+    
+
+         
 
     def recommend(self, user: UserProfile, k: int = 5) -> List[Song]:
         """
@@ -126,41 +198,7 @@ class Recommender:
 
         return ", ".join(reasons)
 
-    """
-    Reads songs from a CSV file and returns them as a list of dictionaries.
-    Numeric values are converted to floats so they can be used in scoring 
-    calculations.
-    @param csv_path CSV to parse.
-    @return list of song dictionaries.
-    """
-    def load_songs(csv_path: str) -> List[Dict]:
 
-        print(f"Loading songs from {csv_path}...")
-
-        songs = []
-
-        with open(csv_path, "r", newline="", encoding="utf-8") as csvfile:
-            reader = csv.DictReader(csvfile)
-
-            # Read each row and store only the fields used by the recommender.
-            for row in reader:
-                # Each dictionary represents one song
-                song = {
-                    "track_id": row["track_id"],
-                    "title": row["track_name"],
-                    "artist": row["artists"],
-                    "album": row["album_name"],
-                    "genre": row["track_genre"],
-                    "energy": float(row["energy"]),
-                    "tempo_bpm": float(row["tempo"]),
-                    "valence": float(row["valence"]),
-                    "danceability": float(row["danceability"]),
-                    "acousticness": float(row["acousticness"]),
-                }
-
-                songs.append(song)
-
-            return songs
 
 
 def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
@@ -245,3 +283,4 @@ def recommend_songs(
 
     # Return only the top k recommendations.
     return recommendations[:k]
+
