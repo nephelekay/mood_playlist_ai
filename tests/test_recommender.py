@@ -1,4 +1,4 @@
-from src.recommender import Song, UserProfile, Recommender, score_song
+from src.recommender import Song, UserProfile, Recommender, scoreSong
 
 def make_small_recommender() -> Recommender:
     songs = [
@@ -103,8 +103,8 @@ def test_energy_similarity_affects_score():
         "acousticness": 0.5,
     }
 
-    high_score, _ = score_song(user, high_energy_song)
-    low_score, _ = score_song(user, low_energy_song)
+    high_score, _ = scoreSong(user, high_energy_song)
+    low_score, _ = scoreSong(user, low_energy_song)
 
     assert high_score > low_score
 
@@ -134,7 +134,7 @@ def test_acoustic_preference_affects_score():
         "acousticness": 0.1,
     }
 
-    acoustic_score, _ = score_song(user, acoustic_song)
-    electronic_score, _ = score_song(user, electronic_song)
+    acoustic_score, _ = scoreSong(user, acoustic_song)
+    electronic_score, _ = scoreSong(user, electronic_song)
 
     assert acoustic_score > electronic_score

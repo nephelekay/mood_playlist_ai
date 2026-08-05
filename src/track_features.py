@@ -30,16 +30,65 @@ class UserProfile:
     """
     favorite_genres: list[str]
     favorite_artists: list[str]
-    favorite_moods: list[str]
 
     target_energy: float
     target_tempo: float
     target_valence: float
     target_danceability: float
     target_acousticness: float
-    
 
-def generate_mood(energy: float, valence: float, acousticness: float) -> str:
+
+def createUserProfile(songs: List[Song]) -> UserProfile | None:
+    user_songs = input("Give me 3 or more favorite songs (separated by commas):")
+    print("Genre + Artists are optional (to skip hit enter)")
+    user_genres = input("     What genres do you like? (separate by commas): ")
+    user_artists = input("    Who are your favorite artists? (separate by commas): ")
+
+    top_songs = [
+        cleanText(user_song)
+        for user_song in user_songs.split(",")
+        if user_song.strip()
+    ]
+
+    top_genres = [
+        cleanText(user_genre)
+        for user_genre in user_genres.split(",")
+        if user_genre.strip()
+    ]
+
+    top_artists = [
+        cleanText(user_artist)
+        for user_artist in user_artists.split(",")
+        if user_artist.strip()
+    ]
+
+    matching_songs = []
+    for song in songs:
+        if cleanText(song.title) in top_songs:
+            matching_songs.append(song)
+
+    if len(matching_songs) == 0: return None
+    song_count = len(matching_songs)
+
+    user = UserProfile(
+        favorite_genres=top_genres,
+        favorite_artists=top_artists,
+
+        target_energy=sum(song.energy for song in matching_songs) / song_count,
+        target_tempo=sum(song.tempo for song in matching_songs) / song_count,
+        target_valence=sum(song.valence for song in matching_songs) / song_count,
+        target_danceability=sum(song.danceability for song in matching_songs) / song_count,
+        target_acousticness=sum(song.acousticness for song in matching_songs) / song_count
+    )
+
+    return user
+
+
+def cleanText(text: str) -> str:
+    return text.lower().strip()
+
+
+def generateMood(energy: float, valence: float, acousticness: float) -> str:
     # Strong acoustic sound
     if acousticness > 0.75 and energy < 0.60:
         return "Acoustic"
@@ -83,7 +132,7 @@ from audio features.
 @param csv_path CSV file to parse.
 @return list of Song objects.
 """
-def load_songs(csv_path: str) -> List[Song]:
+def loadSongs(csv_path: str) -> List[Song]:
 
     print(f"Loading songs from {csv_path}...")
 
@@ -94,7 +143,7 @@ def load_songs(csv_path: str) -> List[Song]:
 
         # Read each row and store only the fields used by the recommender.
         for row in reader:
-            mood = generate_mood(float(row["energy"]), float(row["valence"]), float(row["acousticness"]))
+            mood = generateMood(float(row["energy"]), float(row["valence"]), float(row["acousticness"]))
             songs.append(
                 Song(
                     track_id = row["track_id"],

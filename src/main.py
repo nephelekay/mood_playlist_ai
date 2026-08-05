@@ -1,42 +1,54 @@
-from track_features import Song, UserProfile
-from scoring import score_song
+from src.track_features import loadSongs, createUserProfile
+from src.playlist import recommendSongs, generateMoodPlaylist
 
 
 def main():
+    print("========== MoodPlaylist AI ==========")
+    print("1. Build playlist from my favorite songs")
+    print("2. Generate playlist by mood")
+    print("3. Generate playlist from a prompt")
+    print("4. Save playlist")
+    print("5. Exit")
+    
+    choice = input("Enter your choice (1-5): ")
 
-    test_song = Song(
-        track_id="123",
-        title="Test Song",
-        artists="Test Artist",
-        album="Test Album",
-        genre="pop",
-        mood="Feel-Good",
-        energy=0.85,
-        tempo=120,
-        valence=0.80,
-        danceability=0.90,
-        acousticness=0.10
-    )
+    if choice == "1":
+        songs = loadSongs("data/spotify_tracks.csv")
+        user = createUserProfile(songs)
 
-    test_user = UserProfile(
-        favorite_genres=["pop"],
-        favorite_artists=["Test Artist"],
-        favorite_moods=["Feel-Good"],
+        recommendations = recommendSongs(songs, user, 25)
+        printRecommended(recommendations)
 
-        target_energy=0.80,
-        target_tempo=120,
-        target_valence=0.75,
-        target_danceability=0.85,
-        target_acousticness=0.15
-    )
+    if choice == "2":
+        print("---------------------------------------")
+        print("Generate a playlist based on your mood:")
+        print("Acoustic    Party     Dark     Energetic")
+        print("Feel-Good  Laid-Back  Melancholic  Chill")
+        mood = input("Enter your choice:")
+        generateMoodPlaylist(mood)
+        recommendations = generateMoodPlaylist(mood)
+        printRecommended(recommendations)
 
-    score, reasons = score_song(test_song, test_user)
 
-    print("Score:", score)
-    print("Reasons:")
+def printRecommended(recommend_tracks):
+    number = 1
 
-    for reason in reasons:
-        print("-", reason)
+    for track in recommend_tracks:
+        song = track[0]
+        score = track[1]
+        reasons = track[2]
+
+        print(f"\n{number}. {song.title}")
+        print(f"Artist: {song.artists}")
+        print(f"Album: {song.album}")
+        print(f"Score: {score:.3f}")
+
+        print("Reasons:")
+        for reason in reasons:
+            print("-", reason)
+
+        number += 1
+
 
 
 if __name__ == "__main__":
