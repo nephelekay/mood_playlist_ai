@@ -1,7 +1,7 @@
 
 from src.track_features import loadSongs, createUserProfile
 from src.playlist import recommendSongs, generateMoodPlaylist
-
+from src.html_output import createPlaylistHTML
 
 
 def main():
@@ -17,9 +17,10 @@ def main():
         user = createUserProfile(songs)
 
         recommendations = recommendSongs(songs, user, 25)
+        createPlaylistHTML(recommendations)
         printRecommended(recommendations)
 
-    if choice == "2":
+    elif choice == "2":
         print("---------------------------------------")
         print("Generate a playlist based on your mood:")
         print("Acoustic    Party     Dark     Energetic")
@@ -27,6 +28,7 @@ def main():
         mood = input("Enter your choice:")
         songs = loadSongs("data/spotify_tracks.csv")
         recommendations = generateMoodPlaylist(songs, mood, 25)
+        createPlaylistHTML(recommendations)
         printRecommended(recommendations)
     
    

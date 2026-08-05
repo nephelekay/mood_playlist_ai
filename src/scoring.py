@@ -9,10 +9,6 @@ ACOUSTICNESS_WEIGHT = 0.12
 GENRE_WEIGHT = 0.12
 ARTIST_WEIGHT = 0.08
 
-PROMPT_MOOD_WEIGHT = 0.70
-PROMPT_VALENCE_WEIGHT = 0.20
-PROMPT_ENERGY_WEIGHT = 0.10
-
 ##Explanations to recommendations.
 FEATURE_EXPLANATIONS = {
     "energy": "Similar energy profile to your favorite tracks",
