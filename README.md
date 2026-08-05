@@ -26,6 +26,7 @@ The scores are computed based on how closely they match the user's preferences.T
    python -m venv .venv
    source .venv/bin/activate      # Mac or Linux
    .venv\Scripts\activate         # Windows
+   ```
 
 2. Install dependencies
 
