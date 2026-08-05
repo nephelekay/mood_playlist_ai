@@ -98,6 +98,7 @@ Reasons:
 - Similar energy profile to your favorite tracks
 - Similar rhythm and danceability profile
 - Similar tempo range to your listening preferences
+---
 
 ## Limitations and Risks
 
