@@ -1,6 +1,6 @@
 
 from src.track_features import loadSongs, createUserProfile
-from src.playlist import recommendSongs, generateMoodPlaylist, recommendPromptSongs
+from src.playlist import recommendSongs, generateMoodPlaylist
 
 
 
@@ -25,8 +25,8 @@ def main():
         print("Acoustic    Party     Dark     Energetic")
         print("Feel-Good  Laid-Back  Melancholic  Chill")
         mood = input("Enter your choice:")
-        generateMoodPlaylist(mood)
-        recommendations = generateMoodPlaylist(mood)
+        songs = loadSongs("data/spotify_tracks.csv")
+        recommendations = generateMoodPlaylist(songs, mood, 25)
         printRecommended(recommendations)
     
    

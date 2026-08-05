@@ -2,7 +2,7 @@
 
 ## Project Summary
 
-My version takes into account a user profile, and then scores each song according to the user's preferences. Based on their individual score, songs are sorted. Then the highest scoring songs are returned as recommendations. They are followed by explanations as to why each song was selected.
+My version takes into account a user profile, and then implements similarity scoring for each song according to the user's preferences. Based on their individual score, songs are sorted. Then the highest scoring songs are returned as recommendations. They are followed by explanations as to why each song was selected.
 
 ---
 
@@ -44,116 +44,67 @@ python -m src.main
 Run the starter tests with:
 
 ```bash
-pytest
+python -m pytest
 ```
-
-You can add more tests in `tests/test_recommender.py`.
 
 ---
 
 ## Sample Recommendation Output
 
-Paste a sample of your recommender's output here as a text block so a reader can see what it produces:
-Loading songs from data/songs.csv...
+========== MoodPlaylist AI ==========
+1. Build playlist from my favorite songs
+2. Generate playlist by mood
+3. Exit
+Enter your choice (1-3): 1
+Loading songs from data/spotify_tracks.csv...
+Give me 3 or more favorite songs (separated by commas):calvatore, love,
+ video games
+Genre + Artists are optional (to skip hit enter)
+     What genres do you like? (separate by commas):
+    Who are your favorite artists? (separate by commas): 
 
-=== Top 5 Music Recommendations ===
+1. Fui Fiel
+Artist: Pablo
+Album: Êee Paixão (A Voz Romântica)
+Score: 0.787
+Reasons:
+- Similar energy profile to your favorite tracks
+- Similar rhythm and danceability profile
+- Similar tempo range to your listening preferences
 
-1. Weekend Escape by Coastal Waves
-   Genre: pop | Mood: happy
-   Score: 69.85
-   Reasons: Genre match (+30), Mood match (+20), Energy similarity (+14.8), Low acousticness (+5)
---------------------------------------------------
+2. 薄情歌
+Artist: C AllStar
+Album: CANTOPOPSIBILITY
+Score: 0.783
+Reasons:
+- Similar energy profile to your favorite tracks
+- Similar rhythm and danceability profile
+- Similar tempo range to your listening preferences
 
-2. Sunrise City by Neon Echo
-   Genre: pop | Mood: happy
-   Score: 69.70
-   Reasons: Genre match (+30), Mood match (+20), Energy similarity (+14.7), Low acousticness (+5)
---------------------------------------------------
+3. I Used To Care
+Artist: Louyah
+Album: 6FEET
+Score: 0.783
+Reasons:
+- Similar energy profile to your favorite tracks
+- Similar rhythm and danceability profile
+- Similar tempo range to your listening preferences
 
-3. Gym Hero by Max Pulse
-   Genre: pop | Mood: intense
-   Score: 64.05
-   Reasons: Genre match (+30), Energy similarity (+13.1), Low acousticness (+5)
---------------------------------------------------
-
-4. Rooftop Lights by Indigo Parade
-   Genre: indie pop | Mood: happy
-   Score: 39.40
-   Reasons: Mood match (+20), Energy similarity (+14.4), Low acousticness (+5)
---------------------------------------------------
-
-5. City Pulse by Voltage Avenue
-   Genre: electronic | Mood: energetic
-   Score: 17.65
-   Reasons: Energy similarity (+13.3), Low acousticness (+5)
---------------------------------------------------
-```
-# e.g.:
-# User profile: genre=indie, mood=chill, energy=low
-taste_profile = {
-    "favorite_genre": "lofi",
-    "favorite_mood": "chill",
-    "target_energy": 0.40,
-    "target_tempo": 80,
-    "target_valence": 0.60,
-    "target_danceability": 0.60,
-    "target_acousticness": 0.75
-}
-
-
-**Screenshot or video** *(optional)*: <!-- Insert a screenshot or demo video link here -->
-Loading songs from data/songs.csv...
-
-=== Top 5 Music Recommendations ===
-
-1. Weekend Escape by Coastal Waves
-   Genre: pop | Mood: happy
-   Score: 69.85
-   Reasons: Genre match (+30), Mood match (+20), Energy similarity (+14.8), Low acousticness (+5)
---------------------------------------------------
-2. Sunrise City by Neon Echo
-   Genre: pop | Mood: happy
-   Score: 69.70
-   Reasons: Genre match (+30), Mood match (+20), Energy similarity (+14.7), Low acousticness (+5)
---------------------------------------------------
-3. Gym Hero by Max Pulse
-   Genre: pop | Mood: intense
-   Score: 48.05
-   Reasons: Genre match (+30), Energy similarity (+13.1), Low acousticness (+5)
---------------------------------------------------
-4. Rooftop Lights by Indigo Parade
-   Genre: indie pop | Mood: happy
-   Score: 39.40
-   Reasons: Mood match (+20), Energy similarity (+14.4), Low acousticness (+5)
---------------------------------------------------
-5. Night Drive Loop by Neon Echo
-   Genre: synthwave | Mood: moody
-   Score: 19.25
-   Reasons: Energy similarity (+14.2), Low acousticness (+5)
---------------------------------------------------
-
----
-
-## Experiments You Tried
-
-Use this section to document the experiments you ran. For example:
-
-- When I lowered the weight of the genre, it made the genre a less important factor in the recommendation score. The program stopped prioritizxing whether a song belongs to the user's favorite genre and relied more on other aspects like mood, energy etc.
-- When I added tempo to the score it helped to distinguish between slow and faster songs. This allowed the recommender to become more detailed and accurate, as it considered more aspects about the song's sound. A user that might prefer relaxing music with a slower tempo would be recommended songs of similar tempos.
-- The program produced different recommendations depending on each user's preferences. Someone who likes high-energy pop pieces would be recommended more pop songs, happy mood songs, and energetic beats. On the contrary, someone who likes more relaxed, study-type pieces, would likely be recommended lofi or ambient music.
-
----
+4. No One Like You
+Artist: Eben;Nathaniel Bassey
+Album: No One Like You
+Score: 0.783
+Reasons:
+- Similar energy profile to your favorite tracks
+- Similar rhythm and danceability profile
+- Similar tempo range to your listening preferences
 
 ## Limitations and Risks
 
-Summarize some limitations of your recommender.
-
-There are several limitations to this program, the first being that it is working with a small catalog of songs, therefore, it may not be as accurate as a real platform with millions of songs. The system only considers a few features and does not consider the lyrics, artist popularity, or cultural contesxt which can all influence whether a user enjoys a song or not. Another major limitation is the weighting assigned to each feature. If a genre has a very high weight, then the program may reccomenf only songs from the user's favorite genre and fail to introduce the user to new genres.
+There are several limitations to this program, the first being that it is working with a small catalog of songs, therefore, it may not be as accurate as a real platform with millions of songs. The system only considers a few features and does not consider the lyrics, artist popularity, or cultural context which can all influence whether a user enjoys a song or not. Another major limitation is the weighting assigned to each feature. If a genre has a very high weight, then the program may reccomenf only songs from the user's favorite genre and fail to introduce the user to new genres.
 ---
 
 ## Reflection
-
-Read and complete `model_card.md`:
 
 [**Model Card**](model_card.md)
 

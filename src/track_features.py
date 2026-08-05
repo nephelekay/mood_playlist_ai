@@ -30,7 +30,7 @@ class UserProfile:
     """
     favorite_genres: list[str]
     favorite_artists: list[str]
-    favorite_moods : list[str]
+    favorite_moods: list[str]
 
     target_energy: float
     target_tempo: float
@@ -74,6 +74,7 @@ def createUserProfile(songs: List[Song]) -> UserProfile | None:
     user = UserProfile(
         favorite_genres=top_genres,
         favorite_artists=top_artists,
+        favorite_moods=[song.mood for song in matching_songs],
 
         target_energy=sum(song.energy for song in matching_songs) / song_count,
         target_tempo=sum(song.tempo for song in matching_songs) / song_count,

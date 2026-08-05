@@ -28,13 +28,18 @@ def generateMoodPlaylist(
     songs: list[Song],
     mood: str,
     number_of_songs: int = 25
-) -> list[Song]:
-
+):
     playlist = []
 
     for song in songs:
         if song.mood.lower() == mood.lower():
-            playlist.append(song)
+            playlist.append(
+                (
+                    song,
+                    1.0,
+                    ["Matched playlist mood"]
+                )
+            )
 
     random.shuffle(playlist)
 

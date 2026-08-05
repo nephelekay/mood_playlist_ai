@@ -1,0 +1,40 @@
+classDiagram
+
+    class UserProfile {
+        +String genre
+        +String mood
+        +float target_energy
+        +float target_tempo
+        +float target_valence
+        +float target_danceability
+        +float target_acousticness
+    }
+
+    class Song {
+        +String title
+        +String artist
+        +String genre
+        +String mood
+        +float energy
+        +float tempo
+        +float valence
+        +float danceability
+        +float acousticness
+    }
+
+    class SimilarityScorer {
+        +calculate_score(user, song)
+        +compare_features()
+        +generate_explanation()
+    }
+
+    class Recommender {
+        +List~Song~ songs
+        +recommend(user, k)
+        +rank_songs()
+    }
+
+    UserProfile --> SimilarityScorer : provides preferences
+    Song --> SimilarityScorer : provides features
+    SimilarityScorer --> Recommender : returns scores
+    Recommender --> Song : selects recommendations
