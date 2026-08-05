@@ -30,6 +30,7 @@ class UserProfile:
     """
     favorite_genres: list[str]
     favorite_artists: list[str]
+    favorite_moods : list[str]
 
     target_energy: float
     target_tempo: float

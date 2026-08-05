@@ -9,6 +9,10 @@ ACOUSTICNESS_WEIGHT = 0.12
 GENRE_WEIGHT = 0.12
 ARTIST_WEIGHT = 0.08
 
+PROMPT_MOOD_WEIGHT = 0.70
+PROMPT_VALENCE_WEIGHT = 0.20
+PROMPT_ENERGY_WEIGHT = 0.10
+
 ##Explanations to recommendations.
 FEATURE_EXPLANATIONS = {
     "energy": "Similar energy profile to your favorite tracks",
@@ -80,3 +84,15 @@ def scoreSong(song: Song, user: UserProfile) -> tuple[float, list[str]]:
 
     return score, reasons
 
+
+def scorePromptSong(song: Song, user: UserProfile):
+
+    score = 0
+
+    if song.mood in user.favorite_moods:
+        score += 0.70
+
+    score += valenceSimilarityScore(song, user) * 0.20
+    score += energySimilarityScore(song, user) * 0.10
+
+    return score

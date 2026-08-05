@@ -1,16 +1,16 @@
+
 from src.track_features import loadSongs, createUserProfile
-from src.playlist import recommendSongs, generateMoodPlaylist
+from src.playlist import recommendSongs, generateMoodPlaylist, recommendPromptSongs
+
 
 
 def main():
     print("========== MoodPlaylist AI ==========")
     print("1. Build playlist from my favorite songs")
     print("2. Generate playlist by mood")
-    print("3. Generate playlist from a prompt")
-    print("4. Save playlist")
-    print("5. Exit")
+    print("3. Exit")
     
-    choice = input("Enter your choice (1-5): ")
+    choice = input("Enter your choice (1-3): ")
 
     if choice == "1":
         songs = loadSongs("data/spotify_tracks.csv")
@@ -28,7 +28,8 @@ def main():
         generateMoodPlaylist(mood)
         recommendations = generateMoodPlaylist(mood)
         printRecommended(recommendations)
-
+    
+   
 
 def printRecommended(recommend_tracks):
     number = 1
