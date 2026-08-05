@@ -104,6 +104,7 @@ Reasons:
 ## Limitations and Risks
 
 There are several limitations to this program, the first being that it is working with a small catalog of songs, therefore, it may not be as accurate as a real platform with millions of songs. The system only considers a few features and does not consider the lyrics, artist popularity, or cultural context which can all influence whether a user enjoys a song or not. Another major limitation is the weighting assigned to each feature. If a genre has a very high weight, then the program may reccomenf only songs from the user's favorite genre and fail to introduce the user to new genres.
+
 ---
 
 ## Reflection
