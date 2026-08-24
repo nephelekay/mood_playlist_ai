@@ -1,7 +1,13 @@
+from pathlib import Path
 from urllib.parse import quote
+import webbrowser
+
 
 def createPlaylistHTML(recommendations, filename="output/playlist.html"):
-    with open(filename, "w", encoding="utf-8") as file:
+    output_path = Path(filename)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(output_path, "w", encoding="utf-8") as file:
         file.write("""
         <html>
         <head>
@@ -39,3 +45,7 @@ def createPlaylistHTML(recommendations, filename="output/playlist.html"):
         </body>
         </html>
         """)
+
+    webbrowser.open(output_path.resolve().as_uri())
+
+    print(f"Playlist created: {output_path.resolve()}")

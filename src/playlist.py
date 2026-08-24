@@ -2,6 +2,82 @@ import random
 from src.track_features import Song, UserProfile
 from src.scoring import scoreSong
 
+MOOD_GENRES = {
+    "acoustic": {
+        "acoustic",
+        "folk",
+        "singer-songwriter",
+        "indie",
+        "guitar"
+    },
+
+    "party": {
+        "dance",
+        "pop",
+        "edm",
+        "hip-hop",
+        "club",
+        "disco",
+        "house"
+    },
+
+    "dark": {
+        "metal",
+        "heavy-metal",
+        "black-metal",
+        "death-metal",
+        "goth",
+        "industrial",
+        "hard-rock"
+    },
+
+    "energetic": {
+        "rock",
+        "metal",
+        "punk",
+        "dance",
+        "edm",
+        "hardstyle",
+        "drum-and-bass"
+    },
+
+    "feel-good": {
+        "pop",
+        "disco",
+        "funk",
+        "soul",
+        "dance",
+        "indie-pop"
+    },
+
+    "laid-back": {
+        "chill",
+        "ambient",
+        "jazz",
+        "folk",
+        "acoustic",
+        "soul"
+    },
+
+    "melancholic": {
+        "indie",
+        "alternative",
+        "emo",
+        "singer-songwriter",
+        "folk",
+        "ambient"
+    },
+
+    "chill": {
+        "chill",
+        "ambient",
+        "acoustic",
+        "jazz",
+        "indie",
+        "trip-hop"
+    }
+}
+
 def recommendSongs( songs: list[Song], user: UserProfile, number_of_songs: int = 25) -> list[tuple[Song, float, list[str]]]:
     recommendations = []
 
@@ -31,16 +107,48 @@ def generateMoodPlaylist(
 ):
     playlist = []
 
+    selected_mood = mood.strip().lower()
+
     for song in songs:
-        if song.mood.lower() == mood.lower():
-            playlist.append(
-                (
-                    song,
-                    1.0,
-                    ["Matched playlist mood"]
-                )
-            )
+        score = 0
+        reasons = []
 
-    random.shuffle(playlist)
+        # Primary match: song's assigned mood
+        if song.mood.lower() == selected_mood:
+            score += 1.0
+            reasons.append("Matched playlist mood")
 
-    return playlist[:number_of_songs]
+        # Secondary match: genre associated with the mood
+        if song.genre.lower() in MOOD_GENRES[selected_mood]:
+            score += 0.5
+            reasons.append("Fits the style of this playlist")
+
+        if score > 0:
+            playlist.append((song, score, reasons))
+
+    # Highest-scoring songs first
+    playlist.sort(
+        key=lambda recommendation: recommendation[1],
+        reverse=True
+    )
+
+    # Remove duplicate song titles
+    seen_titles = set()
+    unique_playlist = []
+
+    for recommendation in playlist:
+        song = recommendation[0]
+        title = song.title.strip().lower()
+
+        if title not in seen_titles:
+            unique_playlist.append(recommendation)
+            seen_titles.add(title)
+
+    # Only randomly select from the strongest recommendations
+    candidate_pool = unique_playlist[:75]
+
+    # Return a different playlist each time
+    return random.sample(
+        candidate_pool,
+        min(number_of_songs, len(candidate_pool))
+    )

@@ -2,6 +2,26 @@ from typing import List
 from dataclasses import dataclass
 import csv
 
+EXCLUDED_GENRES = {
+    "chill",
+    "club",
+    "groove",
+    "party",
+    "romance",
+    "sad",
+    "guitar",
+    "piano",
+    "british",
+    "french",
+    "german",
+    "indian",
+    "iranian",
+    "malay",
+    "spanish",
+    "swedish",
+    "turkish",
+    "brazil"
+}
 
 @dataclass
 class Song:
@@ -143,28 +163,34 @@ def loadSongs(csv_path: str) -> List[Song]:
     with open(csv_path, "r", newline="", encoding="utf-8") as csvfile:
         reader = csv.DictReader(csvfile)
 
-        # Read each row and store only the fields used by the recommender.
         for row in reader:
-            mood = generateMood(float(row["energy"]), float(row["valence"]), float(row["acousticness"]))
+
+            if row["track_genre"].lower() in EXCLUDED_GENRES:
+                continue
+
+            mood = generateMood(
+                float(row["energy"]),
+                float(row["valence"]),
+                float(row["acousticness"])
+            )
+
             songs.append(
                 Song(
-                    track_id = row["track_id"],
-                    title = row["track_name"],
-                    artists = row["artists"],
-                    album = row["album_name"],
-                    genre = row["track_genre"],
+                    track_id=row["track_id"],
+                    title=row["track_name"],
+                    artists=row["artists"],
+                    album=row["album_name"],
+                    genre=row["track_genre"],
                     mood=mood,
-                    energy = float(row["energy"]),
-                    tempo = float(row["tempo"]),
-                    valence = float(row["valence"]),
-                    danceability = float(row["danceability"]),
-                    acousticness = float(row["acousticness"]),
+                    energy=float(row["energy"]),
+                    tempo=float(row["tempo"]),
+                    valence=float(row["valence"]),
+                    danceability=float(row["danceability"]),
+                    acousticness=float(row["acousticness"]),
                 )
             )
-            
-        return songs
-    
 
+    return songs
 
 
  

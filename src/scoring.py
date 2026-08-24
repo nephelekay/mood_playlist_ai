@@ -1,13 +1,13 @@
 from src.track_features import Song, UserProfile
 
 ##Scoring per category.
-ENERGY_WEIGHT = 0.22
-DANCEABILITY_WEIGHT = 0.18
-VALENCE_WEIGHT = 0.14
-TEMPO_WEIGHT = 0.14
+ENERGY_WEIGHT = 0.20
+DANCEABILITY_WEIGHT = 0.16
+VALENCE_WEIGHT = 0.13
+TEMPO_WEIGHT = 0.13
 ACOUSTICNESS_WEIGHT = 0.12
-GENRE_WEIGHT = 0.12
-ARTIST_WEIGHT = 0.08
+GENRE_WEIGHT = 0.20
+ARTIST_WEIGHT = 0.06
 
 ##Explanations to recommendations.
 FEATURE_EXPLANATIONS = {
@@ -19,6 +19,40 @@ FEATURE_EXPLANATIONS = {
     "genre": "Matches genres found in your listening history",
     "artist": "Related to artists you already enjoy"
 }
+
+##Genre groups.
+GENRE_GROUPS = [
+    {
+        "metal",
+        "heavy-metal",
+        "death-metal",
+        "black-metal",
+        "metalcore",
+        "hard-rock"
+    },
+    {
+        "rock",
+        "alt-rock",
+        "alternative",
+        "hard-rock",
+        "grunge",
+        "psych-rock",
+        "rock-n-roll",
+        "rockabilly"
+    },
+    {
+        "punk",
+        "punk-rock",
+        "hardcore",
+        "emo"
+    },
+    {
+        "pop",
+        "indie-pop",
+        "power-pop",
+        "synth-pop"
+    }
+]
 
 def energySimilarityScore(song: Song, user: UserProfile) -> float:
     return 1 - abs(song.energy - user.target_energy)
@@ -47,16 +81,42 @@ def moodSimilarityScore(song: Song, user: UserProfile) -> float:
         return 0.0
 
 def genreSimilarityScore(song: Song, user: UserProfile) -> float:
-    if song.genre in user.favorite_genres:
+    song_genre = song.genre.lower()
+    favorite_genres = [
+        genre.lower()
+        for genre in user.favorite_genres
+    ]
+
+    # Exact match
+    if song_genre in favorite_genres:
         return 1.0
-    else:
-        return 0.0
+
+    # Related match
+    for genre_group in GENRE_GROUPS:
+        if song_genre in genre_group:
+            if any(
+                favorite_genre in genre_group
+                for favorite_genre in favorite_genres
+            ):
+                return 0.7
+
+    return 0.0
 
 def artistSimilarityScore(song: Song, user: UserProfile) -> float:
-    if song.artists in user.favorite_artists:
+    song_artists = [
+        artist.strip().lower()
+        for artist in song.artists.split(";")
+    ]
+
+    favorite_artists = [
+        artist.lower()
+        for artist in user.favorite_artists
+    ]
+
+    if any(artist in favorite_artists for artist in song_artists):
         return 1.0
-    else:
-        return 0.0
+
+    return 0.0
     
 def scoreSong(song: Song, user: UserProfile) -> tuple[float, list[str]]:
     score_features = {
