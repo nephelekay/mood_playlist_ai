@@ -1,20 +1,61 @@
-# 🎵 Music Recommender Simulation
+# 🎵 Mood Playlist AI — Personalized Music Recommendation Engine
 
 ## Project Summary
 
-My version takes into account a user profile, and then implements similarity scoring for each song according to the user's preferences. Based on their individual score, songs are sorted. Then the highest scoring songs are returned as recommendations. They are followed by explanations as to why each song was selected.
+Mood Playlist AI is a music recommendation engine that generates personalized song recommendations based on the user's listening preferences.
+
+The project began as a CodePath starter project. I significantly expanded it by replacing the small sample dataset with a dataset of 114,001 Spotify tracks, redesigning the recommendation algorithm around weighted similarity scoring, adding recommendation explanations, generating mood-based playlists, and creating an HTML playlist with clickable Spotify search links.
+
+It compares multiple characteristics of each song to the user's preferences and ranks songs according to their overall similarity.
 
 ---
 
 ## How The System Works
 
-My design recommends songs by comparing the characterisics of songs based on the user's preferences. Each song stores information about genre, mood etc. The user profile includes information such as favorite genre and mood.
-The scores are computed based on how closely they match the user's preferences.To choose a recommendation: 
-  1. Consults user profile
-  2. Compares preferences with songs
-  3. Sorts songs from highest to lowest score
-  4. Returns the highest-scored songs
+Every song is represented by several features, including genre, artists, mood, energy, tempo, valence, danceability, and acousticness.
+UserProfile stores the user's preferences. The profile is created from at least three of the user's favorite songs and can optionally include their preferred genres and artists. The numerical features of the user's favorite songs are averaged to create target values for the recommendation system.
+The personalized playlist creation works as follows:
+1. Loads and filters the Spotify dataset.
+2. Asks the user for at least three favorite songs and optionally preferred genres and artists to build their profile.
+3. Compares each song in the dataset against the preferences stored in the user profile.
+4. Uses weighted scoring to determine how close the songs reflect the user's preferences.
+5. Ranks songs from highest to lowest score. 
+6. Returns 25 highest-scoring recommendations along with explanations as to why each song was recommended.
+7. Uses recommendations to create an HTML file with clickable Spotify links to each song.
+
+The mood playlist creation works as follows: 
+1. The user selects one of the provided moods. 
+2. The system scores each song based on whether it matches the selected mood and whether its genre belongs to an associated mood group.
+3. Sorts the matching songs by score and creates a list of the top 75 songs.
+4. Randomly selects 25 recommendations from the list.
+5. Uses recommendations to create an HTML file with clickable Spotify links to each song.
+
 ---
+
+## Recommendation Features
+Features considered by the scoring system:
+- Genre — rewards songs from genres the user prefers.
+- Artist — considers the user's favorite artists.
+- Energy — measures how closely the song's energy matches the user's target energy value.
+- Tempo — measures similarity between the song's BPM and the user's preferred tempo value.
+- Valence — compares the song's emotional tone value.
+- Danceability — compares how conducive the song is for dancing.
+- Acousticness — compares the user's preference for acoustic versus less acoustic songs.
+
+---
+
+## Mood Classification
+Mood Playlist AI assigns each song a mood using its energy, valence, and acousticness values. The classification uses thresholds to place songs into categories such as Acoustic, Party, Dark, Energetic, Feel-Good, Laid-Back, Melancholic, Chill, and Neutral.
+
+---
+
+## Dataset
+Mood Playlist AI uses a Kaggle dataset containing 114,001 Spotify tracks. The dataset provides information such as track title, artists, album, genre, energy, tempo, valence, danceability, and acousticness.
+
+The dataset is filtered to remove language-specific and broad genre categories that were less useful for the recommendation system.
+
+---
+
 
 ## Getting Started
 
@@ -42,68 +83,28 @@ python -m src.main
 
 ### Running Tests
 
-Run the starter tests with:
+Run tests with:
 
 ```bash
 python -m pytest
 ```
+The test suite checks functionality including mood classification, dataset loading, recommendation ranking, recommendation explanations, duplicate handling, and recommendation limits.
 
----
-
-## Sample Recommendation Output
-
-========== MoodPlaylist AI ==========
-1. Build playlist from my favorite songs
-2. Generate playlist by mood
-3. Exit
-Enter your choice (1-3): 1
-Loading songs from data/spotify_tracks.csv...
-Give me 3 or more favorite songs (separated by commas):calvatore, love,
- video games
-Genre + Artists are optional (to skip hit enter)
-     What genres do you like? (separate by commas):
-    Who are your favorite artists? (separate by commas): 
-
-1. Fui Fiel
-Artist: Pablo
-Album: Êee Paixão (A Voz Romântica)
-Score: 0.787
-Reasons:
-- Similar energy profile to your favorite tracks
-- Similar rhythm and danceability profile
-- Similar tempo range to your listening preferences
-
-2. 薄情歌
-Artist: C AllStar
-Album: CANTOPOPSIBILITY
-Score: 0.783
-Reasons:
-- Similar energy profile to your favorite tracks
-- Similar rhythm and danceability profile
-- Similar tempo range to your listening preferences
-
-3. I Used To Care
-Artist: Louyah
-Album: 6FEET
-Score: 0.783
-Reasons:
-- Similar energy profile to your favorite tracks
-- Similar rhythm and danceability profile
-- Similar tempo range to your listening preferences
-
-4. No One Like You
-Artist: Eben;Nathaniel Bassey
-Album: No One Like You
-Score: 0.783
-Reasons:
-- Similar energy profile to your favorite tracks
-- Similar rhythm and danceability profile
-- Similar tempo range to your listening preferences
 ---
 
 ## Limitations and Risks
 
-There are several limitations to this program, the first being that it is working with a small catalog of songs, therefore, it may not be as accurate as a real platform with millions of songs. The system only considers a few features and does not consider the lyrics, artist popularity, or cultural context which can all influence whether a user enjoys a song or not. Another major limitation is the weighting assigned to each feature. If a genre has a very high weight, then the program may reccomenf only songs from the user's favorite genre and fail to introduce the user to new genres.
+Mood Playlist AI has several limitations. The system relies on a limited set of song features. It does not analyze lyrics, cultural context, listening context, or other information that can affect whether someone enjoys a song.
+The weighting of each feature also affects the recommendations. Giving one feature too much weight could cause the system to over-prioritize certain characteristics and reduce the diversity of recommendations or give an advantage to certain genres over others.
+
+---
+
+## Future Improvements
+
+Potential improvements include:
+- Prompt-based playlist generation using natural language processing (NLP).
+- Incorporating user listening behavior.
+- More sophisticated mood and emotion classification.
 
 ---
 
@@ -111,7 +112,11 @@ There are several limitations to this program, the first being that it is workin
 
 [**Model Card**](model_card.md)
 
-Through this project, I learned how a platform analyzes data to formulate predictions about what a user might enjoy. More relative to my program, a recomender can analyse genre, mood, energy etc., score them based on similarity, and thus create personalized results. I also investigated how reccomendation systems can contain bias depending on how the scoring is implemented. This would lead to certain artists, genres etc. being favored over others, and limiting users' exposure to new experiences.
+Through this project, I gained a better understanding of how recommendation systems turn data into predictions about what a user might enjoy. I learned how the choice of features, similarity calculations, and weighting can significantly affect the results produced by a recommendation system.
+
+Expanding the original starter project also taught me how to turn a small prototype into a more complete application. I worked with a dataset containing over 114,000 tracks, created a user profile from multiple favorite songs, developed a weighted similarity-based scoring system, implemented related-genre matching, and built separate mood-based playlist generation with HTML and Spotify search links.
+
+I also learned that recommendation systems are not completely objective. The dataset, feature selection, genre classifications, scoring rules, and feature weights all carry bias and influence which artists, genres, and styles are recommended. Thus there is a tradeoff between recommending songs that closely match a user's preferences and exposing them to new music.
 
 
 

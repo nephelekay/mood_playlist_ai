@@ -55,32 +55,99 @@ GENRE_GROUPS = [
 ]
 
 def energySimilarityScore(song: Song, user: UserProfile) -> float:
+    """Calculates how closely the song's energy matches user's preference.
+
+    Args:
+        song: Song object containing energy value.
+        user: UserProfile object containing user's target energy.
+
+    Returns:
+        Similarity score between 0.0 and 1.0.
+    """
     return 1 - abs(song.energy - user.target_energy)
 
 
 def tempoSimilarityScore(song: Song, user: UserProfile) -> float:
+    """Calculates how closely the song's tempo matches user's preference.
+
+    Args:
+        song: Song object containing tempo value.
+        user: UserProfile object containing user's target tempo.
+
+    Returns:
+        Similarity score between 0.0 and 1.0.
+    """
     return 1 - abs(song.tempo - user.target_tempo) / 200
 
 
 def valenceSimilarityScore(song: Song, user: UserProfile) -> float:
+    """Calculates how closely the song's valence matches user's preference.
+
+    Args:
+        song: Song object containing valence value.
+        user: UserProfile object containing user's target valence.
+
+    Returns:
+        Similarity score between 0.0 and 1.0.
+    """
     return 1 - abs(song.valence - user.target_valence)
 
 
 def danceabilitySimilarityScore(song: Song, user: UserProfile) -> float:
+    """Calculates how closely the song's danceability matches user's preference.
+
+    Args:
+        song: Song object containing danceability value.
+        user: UserProfile object containing user's target danceability.
+
+    Returns:
+        Similarity score between 0.0 and 1.0.
+    """
     return 1 - abs(song.danceability - user.target_danceability)
 
 
 def acousticnessSimilarityScore(song: Song, user: UserProfile) -> float:
+    """Calculates how closely the song's acousticness matches user's preference.
+
+    Args:
+        song: Song object containing acousticness value.
+        user: UserProfile object containing user's target acousticness.
+
+    Returns:
+        Similarity score between 0.0 and 1.0.
+    """
     return 1 - abs(song.acousticness - user.target_acousticness)
 
 
 def moodSimilarityScore(song: Song, user: UserProfile) -> float:
+    """Checks whether song's mood exists in user's prefered moods.
+
+    Args:
+        song: Song object containing mood.
+        user: UserProfile object containing the user's favorite moods.
+
+    Returns:
+        1.0 if the song's mood is in user's favorite moods, otherwise 0.0.
+    """
     if song.mood in user.favorite_moods:
         return 1.0
     else:
         return 0.0
 
 def genreSimilarityScore(song: Song, user: UserProfile) -> float:
+    """Calculates genre similarity based on exact and related genre match.
+
+    Exact genre match receives the top score, while genres belonging to
+    the same genre group receive a partial score.
+
+    Args:
+        song: Song object containing song's genre.
+        user: UserProfile object containing user's favorite genres.
+
+    Returns:
+        Genre similarity score of 1.0 for exact match, 0.7 for related 
+        match, or 0.0 if no match.
+    """
     song_genre = song.genre.lower()
     favorite_genres = [
         genre.lower()
@@ -103,6 +170,15 @@ def genreSimilarityScore(song: Song, user: UserProfile) -> float:
     return 0.0
 
 def artistSimilarityScore(song: Song, user: UserProfile) -> float:
+    """Checks whether song contains artist that is a user's favorite.
+
+    Args:
+        song: Song object containing artist.
+        user: UserProfile object containing the user's favorite artists.
+
+    Returns:
+        1.0 if song includes favorite artist, otherwise 0.0.
+    """
     song_artists = [
         artist.strip().lower()
         for artist in song.artists.split(";")
@@ -119,6 +195,21 @@ def artistSimilarityScore(song: Song, user: UserProfile) -> float:
     return 0.0
     
 def scoreSong(song: Song, user: UserProfile) -> tuple[float, list[str]]:
+    """Calculates recommendation score for song.
+
+    Each song feature is compared to user's preferences and multiplied
+    by the corresponding weight. Weighted scores are combined to produce
+    final score. The three strongest features that contributed produce
+    explanations for the recommendation.
+
+    Args:
+        song: Song object.
+        user: UserProfile object containing user's preferences.
+
+    Returns:
+        Tuple containing final score and list of explanations for
+        three feautures that most closely matched the user's preferences.
+    """
     score_features = {
         "energy": energySimilarityScore(song, user) * ENERGY_WEIGHT,
         "danceability": danceabilitySimilarityScore(song, user) * DANCEABILITY_WEIGHT,
@@ -139,16 +230,3 @@ def scoreSong(song: Song, user: UserProfile) -> tuple[float, list[str]]:
     score = sum(score_features.values())
 
     return score, reasons
-
-
-def scorePromptSong(song: Song, user: UserProfile):
-
-    score = 0
-
-    if song.mood in user.favorite_moods:
-        score += 0.70
-
-    score += valenceSimilarityScore(song, user) * 0.20
-    score += energySimilarityScore(song, user) * 0.10
-
-    return score

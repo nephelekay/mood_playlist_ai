@@ -5,6 +5,10 @@ from src.html_output import createPlaylistHTML
 
 
 def main():
+    """Runs main menu for the MoodPlaylist AI application.
+    Provides options to build profile-based recommendation playlist, generate
+    playlist matched to a specific mood, or exit program.
+    """
     print("========== MoodPlaylist AI ==========")
     print("1. Build playlist from my favorite songs")
     print("2. Generate playlist by mood")
@@ -12,30 +16,36 @@ def main():
     
     choice = input("Enter your choice (1-3): ")
 
-    if choice == "1":
+    if choice == "1": # Profile-based recommendations
         songs = loadSongs("data/spotify_tracks.csv")
         user = createUserProfile(songs)
 
-        recommendations = recommendSongs(songs, user, 25)
+        recommendations = recommendSongs(songs, user, 25) # Get top 25 recommended tracks matching profile
         createPlaylistHTML(recommendations)
         printRecommended(recommendations)
 
-    elif choice == "2":
+    elif choice == "2": # Mood-based recommendations
         print("---------------------------------------")
         print("Generate a playlist based on your mood:")
         print("Acoustic    Party     Dark     Energetic")
         print("Feel-Good  Laid-Back  Melancholic  Chill")
         mood = input("Enter your choice:")
-        songs = loadSongs("data/spotify_tracks.csv")
+        songs = loadSongs("data/spotify_tracks.csv") # Load data and filter tracks matching user's mood
         recommendations = generateMoodPlaylist(songs, mood, 25)
-        createPlaylistHTML(recommendations)
+        createPlaylistHTML(recommendations) # Export playlist to HTML and print summary to console
         printRecommended(recommendations)
     
    
 
 def printRecommended(recommend_tracks):
-    number = 1
+    """Formats and prints recommended tracks to console.
 
+    Args:
+        recommend_tracks: List of tuples, where each tuple contains
+            (song_object, score_float, reasons_list).
+    """
+    number = 1
+    # Print track metadata, matching score, and explanation reasons
     for track in recommend_tracks:
         song = track[0]
         score = track[1]

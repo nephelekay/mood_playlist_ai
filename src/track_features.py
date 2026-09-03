@@ -2,6 +2,7 @@ from typing import List
 from dataclasses import dataclass
 import csv
 
+#Excluded genres from data for more targeted track similarity
 EXCLUDED_GENRES = {
     "chill",
     "club",
@@ -26,8 +27,7 @@ EXCLUDED_GENRES = {
 @dataclass
 class Song:
     """
-    Represents a song and its attributes.
-    Required by tests/test_recommender.py
+    Represents song and features.
     """
     track_id: str
     title: str
@@ -45,8 +45,7 @@ class Song:
 @dataclass
 class UserProfile:
     """
-    Represents a user's taste preferences.
-    Required by tests/test_recommender.py
+    Represents user's taste preferences.
     """
     favorite_genres: list[str]
     favorite_artists: list[str]
@@ -60,6 +59,18 @@ class UserProfile:
 
 
 def createUserProfile(songs: List[Song]) -> UserProfile | None:
+    """Creates user profile based on preferences.
+
+    The user's favorite songs are matched against available songs, and
+    their average features are used to create target preferences.
+
+    Args:
+        songs: List of Song objects to match against user's input.
+
+    Returns:
+        UserProfile containing user's preferences, or none the
+        entered songs are not found.
+    """
     user_songs = input("Give me 3 or more favorite songs (separated by commas):")
     print("Genre + Artists are optional (to skip hit enter)")
     user_genres = input("     What genres do you like? (separate by commas): ")
@@ -83,7 +94,7 @@ def createUserProfile(songs: List[Song]) -> UserProfile | None:
         if user_artist.strip()
     ]
 
-    matching_songs = []
+    matching_songs = [] #Find songs from dataset that match user's favorites
     for song in songs:
         if cleanText(song.title) in top_songs:
             matching_songs.append(song)
@@ -91,7 +102,7 @@ def createUserProfile(songs: List[Song]) -> UserProfile | None:
     if len(matching_songs) == 0: return None
     song_count = len(matching_songs)
 
-    user = UserProfile(
+    user = UserProfile( #Build profile using average features of matched songs
         favorite_genres=top_genres,
         favorite_artists=top_artists,
         favorite_moods=[song.mood for song in matching_songs],
@@ -107,10 +118,31 @@ def createUserProfile(songs: List[Song]) -> UserProfile | None:
 
 
 def cleanText(text: str) -> str:
+    """Normalizes text to compare against dataset strings.
+
+    Args:
+        text: Text to normalize.
+
+    Returns:
+        Lowercase text with leading and trailing whitespace removed.
+    """
     return text.lower().strip()
 
 
 def generateMood(energy: float, valence: float, acousticness: float) -> str:
+    """Assigns mood based on a song's features.
+
+    The mood is determined using energy, valence, and acousticness ranges
+    to categorize songs into mood groups.
+
+    Args:
+        energy: Measure of song's intensity.
+        valence: Measure of song's positive or negative emotional tone.
+        acousticness: Measure of song's acoustic characteristics.
+
+    Returns:
+        Mood assigned to song.
+    """
     # Strong acoustic sound
     if acousticness > 0.75 and energy < 0.60:
         return "Acoustic"
@@ -147,15 +179,19 @@ def generateMood(energy: float, valence: float, acousticness: float) -> str:
     return "Neutral"   
 
 
-"""
-Reads songs from a CSV file and returns them as Song objects.
-Numeric values are converted to floats and moods are generated
-from audio features.
-@param csv_path CSV file to parse.
-@return list of Song objects.
-"""
-def loadSongs(csv_path: str) -> List[Song]:
 
+def loadSongs(csv_path: str) -> List[Song]:
+    """Loads songs from CSV file and converts them into Song objects.
+
+    Features with numeric values are converted to floats, excluded genres are
+    filtered out, and a mood generated.
+
+    Args:
+        csv_path: Path to the CSV file containing song data.
+
+    Returns:
+        List of Song objects created from CSV data.
+    """
     print(f"Loading songs from {csv_path}...")
 
     songs = []
