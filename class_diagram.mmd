@@ -28,13 +28,30 @@ classDiagram
         +generate_explanation()
     }
 
-    class Recommender {
-        +List~Song~ songs
-        +recommend(user, k)
-        +rank_songs()
+    class Playlist {
+        +recommend_songs(songs, user, number_of_songs)
+        +generate_mood_playlist(songs, mood, number_of_songs)
     }
 
+    class TrackFeatures {
+        +load_songs(csv_path)
+        +generate_mood(energy, valence, acousticness)
+    }
+
+    class HTMLOutput {
+        +create_playlist_html(recommendations, filename)
+    }
+
+    class Main {
+        +main()
+    }
+
+    Main --> TrackFeatures : loads songs
+    Main --> UserProfile : creates profile
+    Main --> Playlist : generates playlist
+    TrackFeatures --> Song : creates song objects
     UserProfile --> SimilarityScorer : provides preferences
     Song --> SimilarityScorer : provides features
-    SimilarityScorer --> Recommender : returns scores
-    Recommender --> Song : selects recommendations
+    SimilarityScorer --> Playlist : calculates recommendations
+    Playlist --> HTMLOutput : sends recommendations
+    HTMLOutput --> Song : displays song information
