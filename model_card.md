@@ -1,56 +1,71 @@
-# 🎧 Model Card: Music Recommender Simulation
+# 🎧 Model Card: Mood Playlist AI
 
 ## 1. Model Name  
-MoodPlaylistAI
+
+Mood Playlist AI
 
 ---
 
 ## 2. Intended Use  
 
-This is a music-recommender designed to suggest songs according to the user's preferences. It generates recommendations by comparing the aspects of genre, mood, energy, tempo, valence, danceability, and acousticness.
-It assumes the users will enjoy songs similar to their perceived preferences, top three songs, and potentially their favorite artists and genres.
+Mood Playlist AI is a content-based music recommendation system designed to suggest songs based on a user's listening preferences.
+
+The system assumes that songs with similar characteristics to a user's favorite songs are more likely to be enjoyable to that user.
+
+The system is intended to provide music recommendations and is not designed to replace professional music recommendation platforms.
 
 ---
 
-## 3. How the Model Works  
+## 3. Design Approach  
 
-The program analyzes several song features, using a scoring algorithm to generate a list of 25 songs with the user's preferences in mind.
-Then the program turns these preferences into a score for every song. A song may receive more or less points considering whether they are close to numerical target values, such as energy level or if the song's genre or  artist is in the user's favorite artists or genres.
-The starter logic was improved through expanding the dataset to more than 100,000 songs, implementing genre grouping unto the scoring algorithm, adding moood-specific playlist recommendations and producing an html file the user can find spotify links to songs in the playlist.
+The recommendation system uses a content-based approach. A user's profile is built from their favorite songs, and the system uses the characteristics of those songs to establish their preferences. Individual characteristics are then given different weights when determining how closely another song matches the profile.
 
----
+The mood playlist feature uses a different approach. It uses manually defined rules to classify songs into moods and identify songs that fit a selected mood.
 
-## 4. Data  
-
-The dataset the model uses is from Kaggle. It is comprised of 114,001 Spotify tracks and their respective attributes and information(artists,album, genre, mood, energy, tempo, valence, danceability, and acousticness). The dataset is filtered, eliminating any tracks from language-specific genres as those may actually be of a multitude of genres. Film and broad genres such as sad or groove to make the recommendations more accurate.
 
 ---
 
-## 5. Strengths  
+## 4. Strengths  
 
-The program works well for users with clear preferences, especially based on genre and mood. The scoring system can successfully observe these patterns and offer fitting recommendations. 
-The explanations are also helpful as to explain why each was reccomended to the user.
+One of the main strengths of the system is that its recommendations are explainable. Rather than producing a recommendation without context, the system identifies the features that contributed most to its score.
 
----
+The system is also relatively easy to modify. The scoring weights, genre relationships, and mood rules are explicitly defined, so they can be adjusted without retraining a model.
 
-## 6. Limitations and Bias 
+Another strength is that the system can represent different types of preferences. A user may prefer a particular genre, artist, energy level, tempo, or combination of these characteristics rather than relying on a single preference.
 
-Unsure what to write here.
 
 ---
 
-## 7. Evaluation  
+## 5. Limitations and Bias 
+The biggest limitation is that musical preference cannot be completely represented by numerical audio features. Two songs can have similar energy, tempo, or valence while still sounding very different. The system does not account for lyrics, songwriting, cultural context, personal associations, or the situation in which a song is being played.
 
-The recommender was tested using several different taste profiles. This allowed to check whether the result matched the expectations of a music recommender. For example, for a pop, happy energy user, one would expect upbeat songs, whereas for a high-energy workout user, one would expect intense songs with fast beat. Say more about the testing
+The mood classifications are also subjective. The thresholds used to assign moods were manually chosen, so a song classified as Melancholic or Chill, for example, may not be perceived that way by every listener.
+
+The recommendation weights introduce another source of bias. Giving genre or energy more influence than other features means that the system will favor those characteristics when making recommendations. These weights reflect design decisions rather than learned evidence about what users actually prefer.
+
+The genre groupings can introduce similar bias. Treating certain genres as related may produce useful recommendations, but those relationships are subjective and may not reflect how every listener categorizes music.
 
 ---
 
-## 8. Future Work  
+## 6. Evaluation  
 
-An idea for future improvement is to add a prompt-based recommendation feature where the user can enter a prompt, such as three sentences conveying a melancholic mood and then be presented with a playlist conveying that feeling. This would require building a mini NLP engine. The challenge for this undertaking is selecting an appropriate emotion lexicon/word association dataset and working with that data to make sufficient connections before even reading the user's input.
+The automated tests verify that important parts of the system behave as expected, including mood classification, dataset loading, recommendation ordering, recommendation explanations, duplicate handling, and song limits.
+
+The recommendation output was also inspected using example user profiles to determine whether the results were reasonable given the preferences provided.
+
 
 ---
 
-## 9. Personal Reflection  
+## 7. Future Work  
 
-Throughout this project I gained valuable knowledge on how recommendation systems work. It was very interesting to see how systems turn data into predictions about what users might enjoy. I also learned that it is difficult for a recommendation to be objective, because using a sorting algorithm and a scoring algorithm ensures that it is never truly random. This project helped me understand how real-life platforms like Spotify work in the background to offer recommendations to listeners.
+A major area for future development would be incorporating natural-language input. For example, a user could describe a desired playlist as "something melancholic for a rainy evening" instead of selecting a predefined mood.
+
+The system could also be improved by making mood classification more sophisticated and introducing mechanisms that balance similarity with recommendation diversity.
+
+---
+
+## 8. Personal Reflection  
+
+One of the most important things I learned from this project is that building a recommendation system involves more than simply finding similar data. The decisions about which features to use, how those features are weighted, and how relationships between categories are defined all influence the final result.
+
+Expanding the original CodePath project gave me the opportunity to make those design decisions myself and see how they affected the behavior of the system. It also showed me the importance of evaluating the assumptions behind a recommendation system rather than only evaluating whether the code runs correctly.

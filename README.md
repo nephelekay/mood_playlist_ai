@@ -13,7 +13,9 @@ It compares multiple characteristics of each song to the user's preferences and 
 ## How The System Works
 
 Every song is represented by several features, including genre, artists, mood, energy, tempo, valence, danceability, and acousticness.
+
 UserProfile stores the user's preferences. The profile is created from at least three of the user's favorite songs and can optionally include their preferred genres and artists. The numerical features of the user's favorite songs are averaged to create target values for the recommendation system.
+
 The personalized playlist creation works as follows:
 1. Loads and filters the Spotify dataset.
 2. Asks the user for at least three favorite songs and optionally preferred genres and artists to build their profile.
@@ -33,6 +35,7 @@ The mood playlist creation works as follows:
 ---
 
 ## Recommendation Features
+
 Features considered by the scoring system:
 - Genre — rewards songs from genres the user prefers.
 - Artist — considers the user's favorite artists.
@@ -45,11 +48,13 @@ Features considered by the scoring system:
 ---
 
 ## Mood Classification
+
 Mood Playlist AI assigns each song a mood using its energy, valence, and acousticness values. The classification uses thresholds to place songs into categories such as Acoustic, Party, Dark, Energetic, Feel-Good, Laid-Back, Melancholic, Chill, and Neutral.
 
 ---
 
 ## Dataset
+
 Mood Playlist AI uses a Kaggle dataset containing 114,001 Spotify tracks. The dataset provides information such as track title, artists, album, genre, energy, tempo, valence, danceability, and acousticness.
 
 The dataset is filtered to remove language-specific and broad genre categories that were less useful for the recommendation system.
@@ -95,6 +100,7 @@ The test suite checks functionality including mood classification, dataset loadi
 ## Limitations and Risks
 
 Mood Playlist AI has several limitations. The system relies on a limited set of song features. It does not analyze lyrics, cultural context, listening context, or other information that can affect whether someone enjoys a song.
+
 The weighting of each feature also affects the recommendations. Giving one feature too much weight could cause the system to over-prioritize certain characteristics and reduce the diversity of recommendations or give an advantage to certain genres over others.
 
 ---
